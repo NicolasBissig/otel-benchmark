@@ -10,3 +10,7 @@ X-Session-Token: 1
 
 ### Get all products
 GET localhost:8080/products
+
+### Get product 1
+GET localhost:8080/products/1
+X-Session-Token: 1

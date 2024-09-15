@@ -4,7 +4,10 @@ services:
     image: otel/opentelemetry-collector-contrib:0.109.0
     volumes:
       - ./docker/collector/collector-config.yaml:/etc/collector-config.yaml
-    command: [ "--config=/etc/collector-config.yaml" ]
+      - /var/run:/var/run:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    command: [ "--config=/etc/collector-config.yaml", "--feature-gates=receiver.hostmetrics.normalizeProcessCPUUtilization" ]
+    privileged: true
     ports:
       - 1888:1888 # pprof extension
       - 8888:8888 # Prometheus metrics exposed by the Collector

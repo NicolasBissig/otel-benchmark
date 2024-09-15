@@ -12,12 +12,9 @@ receivers:
           scrape_interval: 1s
           static_configs:
             - targets: [ '0.0.0.0:8888' ]
-        - job_name: 'cadvisor'
-          scrape_interval: 1s
-          static_configs:
-            - targets: [ 'cadvisor:8080' ]
-          metrics_path: '/metrics'
-          scheme: 'http'
+  docker_stats:
+    collection_interval: 1s
+    timeout: 5s
 
 processors:
   batch:
@@ -44,7 +41,7 @@ service:
       processors: [batch]
       exporters: [clickhouse]
     metrics:
-      receivers: [otlp, prometheus]
+      receivers: [otlp, prometheus, docker_stats]
       processors: [batch]
       exporters: [clickhouse]
     logs:
