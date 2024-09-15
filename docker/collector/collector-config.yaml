@@ -1,0 +1,53 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317 # gRPC endpoint
+      http:
+        endpoint: 0.0.0.0:4318 # HTTP endpoint
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: 'otelcol'
+          scrape_interval: 1s
+          static_configs:
+            - targets: [ '0.0.0.0:8888' ]
+        - job_name: 'cadvisor'
+          scrape_interval: 1s
+          static_configs:
+            - targets: [ 'cadvisor:8080' ]
+          metrics_path: '/metrics'
+          scheme: 'http'
+
+processors:
+  batch:
+
+exporters:
+  clickhouse: # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/clickhouseexporter
+    endpoint: "http://clickhouse:8123"
+    username: clickhouse
+    password: clickhouse
+
+extensions:
+  health_check:
+  pprof:
+  zpages:
+
+service:
+  extensions: [health_check, pprof, zpages]
+  telemetry:
+    metrics:
+      address: 0.0.0.0:8888
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [clickhouse]
+    metrics:
+      receivers: [otlp, prometheus]
+      processors: [batch]
+      exporters: [clickhouse]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [clickhouse]

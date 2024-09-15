@@ -1,0 +1,28 @@
+# Grafana clickhouse data source for OpenTelemetry
+
+apiVersion: 1
+
+datasources:
+  - name: Clickhouse
+    type: grafana-clickhouse-datasource
+    access: proxy
+    isDefault: true
+    jsonData:
+      defaultDatabase: default
+      defaultTable: otel_traces
+      host: clickhouse
+      port: 9000
+      protocol: native
+      username: clickhouse
+      logs:
+        defaultDatabase: default
+        defaultTable: otel_logs
+        otelEnabled: true
+        otelVersion: 1.2.9
+      traces:
+        defaultDatabase: default
+        defaultTable: otel_traces
+        otelEnabled: true
+        otelVersion: 1.2.9
+    secureJsonData:
+      password: clickhouse

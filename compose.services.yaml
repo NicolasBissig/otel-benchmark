@@ -5,6 +5,10 @@ services:
       dockerfile: Dockerfile
     environment:
       - SPRING_DATA_REDIS_HOST=redis
+      # OpenTelemetry
+      - JAVA_TOOL_OPTIONS=-javaagent:/app/opentelemetry-javaagent.jar
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://collector:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
     ports:
       - "8081:8081"
     depends_on:
@@ -19,6 +23,10 @@ services:
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
       - SESSION_SERVICE_HOST=session-service
+      # OpenTelemetry
+      - JAVA_TOOL_OPTIONS=-javaagent:/app/opentelemetry-javaagent.jar
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://collector:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
     ports:
       - "8080:8080"
     depends_on:
