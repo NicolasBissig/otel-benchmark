@@ -4,17 +4,17 @@ services:
     pid: "service:k6"
     privileged: true
     environment:
-      BEYLA_TRACE_PRINTER: text
+      #BEYLA_TRACE_PRINTER: text
       BEYLA_OPEN_PORT: 5665
-      OTEL_EXPORTER_OTLP_PROTOCOL: "http/protobuf"
-      OTEL_EXPORTER_OTLP_ENDPOINT: "http://collector:4318"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://collector:4317"
     depends_on:
       k6:
         condition: service_started
 
   # K6 web dashboard available at http://localhost:5665
   k6:
-    image: grafana/k6:0.51.0
+    image: grafana/k6:0.53.0
     volumes:
       - ./k6:/home/k6
     environment:

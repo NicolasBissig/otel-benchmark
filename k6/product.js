@@ -1,15 +1,27 @@
 import http from 'k6/http';
-import { check } from 'k6';
+import {check} from 'k6';
 
+// Duration in seconds
 const WARMUP_DURATION = 30;
-const MAIN_DURATION = 60;
-//const FAILURE_DURATION = 1 * 60 * 60;
-const BUFFER_DURATION = 10;
+const MAIN_DURATION = 6 * 60; // first minute throwaway
+// Time between scenarios in seconds
+const BUFFER_DURATION = 0;
 
 function toDurationString(seconds) {
     return `${seconds}s`;
 }
 
+function mainScenario(index) {
+    return {
+        executor: 'constant-arrival-rate',
+        rate: 1000,
+        timeUnit: '1s',
+        duration: toDurationString(MAIN_DURATION),
+        startTime: toDurationString(WARMUP_DURATION + ((index + 1) * BUFFER_DURATION) + (index * MAIN_DURATION)),
+        preAllocatedVUs: 20,
+        maxVUs: 1000,
+    };
+}
 
 // constant requests per second test
 export const options = {
@@ -21,22 +33,17 @@ export const options = {
     },
     scenarios: {
         warmup: { // Warm up the application
-            executor: 'constant-arrival-rate',
-            rate: 100,
+            executor: 'ramping-arrival-rate',
             timeUnit: '1s',
-            duration: toDurationString(WARMUP_DURATION),
-            preAllocatedVUs: 20,
+            preAllocatedVUs: 1,
             maxVUs: 1000,
+            stages: [
+                { duration: toDurationString(WARMUP_DURATION), target: mainScenario(0).rate },
+            ]
         },
-        main: { // Main test
-            executor: 'constant-arrival-rate',
-            rate: 1000,
-            timeUnit: '1s',
-            duration: toDurationString(MAIN_DURATION),
-            startTime: toDurationString(WARMUP_DURATION + BUFFER_DURATION),
-            preAllocatedVUs: 20,
-            maxVUs: 1000,
-        },
+        main_1: mainScenario(0),
+        //main_2: mainScenario(1),
+        //main_3: mainScenario(2),
     },
 }
 
@@ -63,10 +70,10 @@ export function setup() {
     }
 }
 
-export default function() {
+export default function () {
     const BASE_URL = __ENV.PRODUCT_SERVICE || 'http://localhost:8080';
 
-    let res = http.get(BASE_URL+ '/products/1', {
+    let res = http.get(BASE_URL + '/products/1', {
         headers: {
             'X-Session-Token': 1,
         },
