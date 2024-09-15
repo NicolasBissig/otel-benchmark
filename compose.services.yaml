@@ -1,0 +1,25 @@
+services:
+  session-service:
+    build:
+      context: ./session-service
+      dockerfile: Dockerfile
+    environment:
+      - SPRING_DATA_REDIS_HOST=redis
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+
+  product-service:
+    build:
+      context: ./product-service
+      dockerfile: Dockerfile
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/products
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SESSION_SERVICE_HOST=session-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres

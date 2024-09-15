@@ -1,0 +1,12 @@
+### Create a product
+POST localhost:8080/products
+Content-Type: application/json
+X-Session-Token: 1
+
+{
+  "name": "Product 1",
+  "priceCents": 100
+}
+
+### Get all products
+GET localhost:8080/products

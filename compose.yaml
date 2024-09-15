@@ -10,7 +10,5 @@ services:
 
   redis:
     image: redis:7
-    environment:
-      REDIS_PASSWORD: redis
     ports:
       - "6379:6379"
