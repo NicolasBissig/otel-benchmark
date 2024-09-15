@@ -3,7 +3,7 @@ import { check } from 'k6';
 
 const WARMUP_DURATION = 30;
 const MAIN_DURATION = 60;
-const FAILURE_DURATION = 1 * 60 * 60;
+//const FAILURE_DURATION = 1 * 60 * 60;
 const BUFFER_DURATION = 10;
 
 function toDurationString(seconds) {
@@ -37,17 +37,6 @@ export const options = {
             preAllocatedVUs: 20,
             maxVUs: 1000,
         },
-        failure: { // Test until failure
-            executor: 'ramping-arrival-rate',
-            startRate: 1000,
-            timeUnit: '1s',
-            startTime: toDurationString(WARMUP_DURATION + MAIN_DURATION + BUFFER_DURATION + BUFFER_DURATION),
-            preAllocatedVUs: 20,
-            maxVUs: 100000,
-            stages: [
-                { duration: toDurationString(FAILURE_DURATION), target: 20000000 }, // just slowly ramp-up to a HUGE load
-            ],
-        }
     },
 }
 
@@ -60,7 +49,7 @@ export function setup() {
         throw new Error('Failed to create session');
     }
 
-    const productResponse = http.post(PRODUCT_URL + `/products`, JSON.stringify({
+    const productResponse = http.put(PRODUCT_URL + `/products/1`, JSON.stringify({
         "name": "Product 1",
         "priceCents": 100
     }), {
