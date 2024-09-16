@@ -1,6 +1,7 @@
 # otel-shopping-cart-benchmark
 
 - Grafana: http://localhost:3000
+![](doc/architecture.drawio.svg)
 
 ## Steps
 
