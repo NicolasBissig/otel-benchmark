@@ -1,5 +1,0 @@
-### Create a session
-POST http://localhost:8081/sessions/users/1
-
-### Get a session
-GET http://localhost:8081/sessions/bba4f05b-325d-4ec6-b45b-3c7664d36325

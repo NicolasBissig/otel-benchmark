@@ -4,7 +4,7 @@ services:
       context: ./session-service
       dockerfile: Dockerfile
     environment:
-      - SPRING_DATA_REDIS_HOST=redis
+      - REDIS_HOST=redis
       # OpenTelemetry
       #- JAVA_TOOL_OPTIONS=-javaagent:/app/opentelemetry-javaagent.jar
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://collector:4317
