@@ -25,7 +25,7 @@ docker compose -f compose.observability.yaml -f compose.services.yaml -f compose
 
 ## Restart / Change settings
 
-Edit the `compose.services.yaml` file and (un)comment the `JAVA_TOOL_OPTIONS` for *ALL* services.
+Edit the `compose.services.yaml` file and (un)comment the `JAVA_TOOL_OPTIONS` and `NODE_OPTIONS` for *ALL* services.
 
 Restart the services:
 

@@ -52,7 +52,7 @@ export function setup() {
     const SESSION_URL = __ENV.SESSION_SERVICE || 'http://localhost:8081';
 
     const sessionResponse = http.post(SESSION_URL + `/sessions/users/1`);
-    if (sessionResponse.status !== 200 && sessionResponse.status !== 409) {
+    if (sessionResponse.status !== 201 && sessionResponse.status !== 409) {
         throw new Error('Failed to create session');
     }
 

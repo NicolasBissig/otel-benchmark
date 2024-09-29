@@ -6,7 +6,9 @@ services:
     environment:
       - REDIS_HOST=redis
       # OpenTelemetry
-      #- JAVA_TOOL_OPTIONS=-javaagent:/app/opentelemetry-javaagent.jar
+      - NODE_OPTIONS=--require @opentelemetry/auto-instrumentations-node/register
+      - OTEL_SERVICE_NAME=session-service
+      - OTEL_NODE_DISABLED_INSTRUMENTATIONS="fs" # Produces too many spans
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://collector:4317
       - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
     ports:
@@ -24,7 +26,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=postgres
       - SESSION_SERVICE_HOST=session-service
       # OpenTelemetry
-      #- JAVA_TOOL_OPTIONS=-javaagent:/app/opentelemetry-javaagent.jar
+      - JAVA_TOOL_OPTIONS=-javaagent:/app/opentelemetry-javaagent.jar
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://collector:4317
       - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
     ports:
