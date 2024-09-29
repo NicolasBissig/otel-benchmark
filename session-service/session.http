@@ -1,0 +1,5 @@
+### Create a session
+POST http://localhost:8081/sessions/users/1
+
+### Get a session
+GET http://localhost:8081/sessions/1
