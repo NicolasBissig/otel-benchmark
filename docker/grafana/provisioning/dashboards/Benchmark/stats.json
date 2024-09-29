@@ -662,7 +662,7 @@
               "options": {
                 "mode": "exclude",
                 "names": [
-                  "max(Duration) {arrayElement(SpanAttributes, 'htt.request.method')=\"\", arrayElement(SpanAttributes, 'url.full')=\"/products/1\"}"
+                  "max(Duration) {ServiceName=\"k6\", arrayElement(SpanAttributes, 'htt.request.method')=\"\", arrayElement(SpanAttributes, 'url.full')=\"/products/1\"}"
                 ],
                 "prefix": "All except:",
                 "readOnly": true
@@ -731,6 +731,163 @@
             ],
             "groupBy": [
               "SpanAttributes['htt.request.method']",
+              "SpanAttributes['url.full']",
+              "ServiceName"
+            ],
+            "limit": 0,
+            "meta": {},
+            "mode": "trend",
+            "orderBy": [
+              {
+                "default": true,
+                "dir": "ASC",
+                "hint": "time",
+                "name": ""
+              }
+            ],
+            "queryType": "timeseries",
+            "table": "otel_traces"
+          },
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "PDF61E9E97939C7ED"
+          },
+          "editorType": "builder",
+          "format": 0,
+          "pluginVersion": "4.4.0",
+          "rawSql": "SELECT $__timeInterval(Timestamp) as \"time\", SpanAttributes['htt.request.method'], SpanAttributes['url.full'], ServiceName, max(Duration) FROM \"default\".\"otel_traces\" WHERE ( time >= $__fromTime AND time <= $__toTime ) GROUP BY SpanAttributes['htt.request.method'], SpanAttributes['url.full'], ServiceName, time ORDER BY time ASC",
+          "refId": "A"
+        }
+      ],
+      "title": "Max Client Latency per ${__interval}",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ns"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 49
+      },
+      "id": 6,
+      "interval": "1s",
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "builderOptions": {
+            "aggregates": [
+              {
+                "aggregateType": "avg",
+                "column": "Duration"
+              },
+              {
+                "aggregateType": "max",
+                "column": "Duration"
+              }
+            ],
+            "columns": [
+              {
+                "alias": "Timestamp",
+                "hint": "time",
+                "name": "Timestamp",
+                "type": "DateTime64(9)"
+              }
+            ],
+            "database": "default",
+            "filters": [
+              {
+                "condition": "AND",
+                "filterType": "custom",
+                "hint": "time",
+                "key": "",
+                "operator": "WITH IN DASHBOARD TIME RANGE",
+                "type": "datetime"
+              },
+              {
+                "condition": "AND",
+                "filterType": "custom",
+                "key": "SpanName",
+                "label": "SpanName",
+                "operator": "=",
+                "type": "LowCardinality(String)",
+                "value": "GET"
+              }
+            ],
+            "groupBy": [
+              "ServiceName",
               "SpanAttributes['url.full']"
             ],
             "limit": 0,
@@ -754,11 +911,11 @@
           "editorType": "builder",
           "format": 0,
           "pluginVersion": "4.4.0",
-          "rawSql": "SELECT $__timeInterval(Timestamp) as \"time\", SpanAttributes['htt.request.method'], SpanAttributes['url.full'], max(Duration) FROM \"default\".\"otel_traces\" WHERE ( time >= $__fromTime AND time <= $__toTime ) GROUP BY SpanAttributes['htt.request.method'], SpanAttributes['url.full'], time ORDER BY time ASC",
+          "rawSql": "SELECT $__timeInterval(Timestamp) as \"time\", ServiceName, SpanAttributes['url.full'], avg(Duration), max(Duration) FROM \"default\".\"otel_traces\" WHERE ( time >= $__fromTime AND time <= $__toTime ) AND ( SpanName = 'GET' ) GROUP BY ServiceName, SpanAttributes['url.full'], time ORDER BY time ASC",
           "refId": "A"
         }
       ],
-      "title": "Panel Title",
+      "title": "Client Latency & Session Service Latency per ${__interval}",
       "type": "timeseries"
     },
     {
@@ -816,7 +973,7 @@
         "h": 8,
         "w": 16,
         "x": 0,
-        "y": 49
+        "y": 60
       },
       "id": 5,
       "options": {
@@ -929,13 +1086,13 @@
     ]
   },
   "time": {
-    "from": "2024-09-15T18:03:59.740Z",
-    "to": "2024-09-15T18:08:59.527Z"
+    "from": "now-1h",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Benchmark Statistics",
   "uid": "stats",
-  "version": 21,
+  "version": 1,
   "weekStart": ""
 }
