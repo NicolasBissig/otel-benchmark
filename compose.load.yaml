@@ -33,5 +33,3 @@ services:
     depends_on:
       product-service:
         condition: service_started
-      session-service:
-        condition: service_started

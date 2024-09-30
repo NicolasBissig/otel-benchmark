@@ -9,18 +9,25 @@ Setup observability stack, also used for container monitoring:
 
 ```bash
 docker compose -f compose.observability.yaml up -d
+docker compose -f compose.observability.yaml -f compose.services.yaml up -d redis postgres
 ```
 
-Setup the applications:
+Set up the applications [Java & Java]:
 
 ```bash
-docker compose -f compose.observability.yaml -f compose.services.yaml up -d --build
+docker compose -f compose.observability.yaml -f compose.services.yaml -f compose.session.java.yaml up -d product-service session-service --build
+```
+
+Set up the applications [Java & TypeScript]:
+
+```bash
+docker compose -f compose.observability.yaml -f compose.services.yaml -f compose.session.ts.yaml up -d product-service session-service --build
 ```
 
 Run the benchmark:
 
 ```bash
-docker compose -f compose.observability.yaml -f compose.services.yaml -f compose.load.yaml up -d
+docker compose -f compose.observability.yaml -f compose.services.yaml -f compose.load.yaml up -d k6 autoinstrumenter
 ```
 
 ## Restart / Change settings
@@ -30,6 +37,8 @@ Edit the `compose.services.yaml` file and (un)comment the `JAVA_TOOL_OPTIONS` an
 Restart the services:
 
 ```bash
-docker compose -f compose.services.yaml stop redis postgres product-service session-service
+docker compose -f compose.services.yaml stop redis postgres product-service
+docker compose -f compose.services.yaml -f compose.session.java.yaml stop session-service
+docker compose -f compose.services.yaml -f compose.session.ts.yaml stop session-service
 docker compose -f compose.services.yaml down -v redis postgres
 ```

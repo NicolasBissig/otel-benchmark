@@ -3,7 +3,7 @@ import {check} from 'k6';
 
 // Duration in seconds
 const WARMUP_DURATION = 30;
-const MAIN_DURATION = 6 * 60; // first minute throwaway
+const MAIN_DURATION = 1.5 * 60; // first minute throwaway
 // Time between scenarios in seconds
 const BUFFER_DURATION = 0;
 
@@ -52,7 +52,7 @@ export function setup() {
     const SESSION_URL = __ENV.SESSION_SERVICE || 'http://localhost:8081';
 
     const sessionResponse = http.post(SESSION_URL + `/sessions/users/1`);
-    if (sessionResponse.status !== 201 && sessionResponse.status !== 409) {
+    if (!(sessionResponse.status === 201 || sessionResponse.status === 200) && sessionResponse.status !== 409) {
         throw new Error('Failed to create session');
     }
 
