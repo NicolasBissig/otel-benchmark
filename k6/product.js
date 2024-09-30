@@ -3,24 +3,12 @@ import {check} from 'k6';
 
 // Duration in seconds
 const WARMUP_DURATION = 30;
-const MAIN_DURATION = 1.5 * 60; // first minute throwaway
-// Time between scenarios in seconds
-const BUFFER_DURATION = 0;
+const TEST_DURATION = 2 * 60;
+
+const TARGET_RPS = 1000;
 
 function toDurationString(seconds) {
     return `${seconds}s`;
-}
-
-function mainScenario(index) {
-    return {
-        executor: 'constant-arrival-rate',
-        rate: 1000,
-        timeUnit: '1s',
-        duration: toDurationString(MAIN_DURATION),
-        startTime: toDurationString(WARMUP_DURATION + ((index + 1) * BUFFER_DURATION) + (index * MAIN_DURATION)),
-        preAllocatedVUs: 20,
-        maxVUs: 1000,
-    };
 }
 
 // constant requests per second test
@@ -30,20 +18,22 @@ export const options = {
             threshold: 'rate<0.01',
             abortOnFail: true,
         }],
+        http_req_duration: [{
+            threshold: 'p(50)<200', /// 50% of requests must complete below 200ms
+            abortOnFail: true,
+        }],
     },
     scenarios: {
-        warmup: { // Warm up the application
+        main: {
             executor: 'ramping-arrival-rate',
             timeUnit: '1s',
             preAllocatedVUs: 1,
             maxVUs: 1000,
             stages: [
-                { duration: toDurationString(WARMUP_DURATION), target: mainScenario(0).rate },
+                {duration: toDurationString(WARMUP_DURATION), target: TARGET_RPS},
+                {duration: toDurationString(TEST_DURATION), target: TARGET_RPS},
             ]
         },
-        main_1: mainScenario(0),
-        //main_2: mainScenario(1),
-        //main_3: mainScenario(2),
     },
 }
 
