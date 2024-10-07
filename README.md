@@ -52,3 +52,10 @@ docker compose -f compose.services.yaml -f compose.session.java.yaml stop sessio
 docker compose -f compose.services.yaml -f compose.session.ts.yaml stop session-service
 docker compose -f compose.services.yaml down -v redis postgres
 ```
+
+## Remove and purge all
+
+```bash
+docker compose -f compose.observability.yaml -f compose.services.yaml -f compose.load.yaml -f compose.session.java.yaml down -v
+docker compose -f compose.observability.yaml -f compose.services.yaml -f compose.load.yaml -f compose.session.ts.yaml down -v
+```
