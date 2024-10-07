@@ -3,6 +3,16 @@
 - Grafana: http://localhost:3000
 ![](doc/architecture.drawio.svg)
 
+## Building the images
+
+```bash
+docker compose -f compose.observability.yaml -f compose.services.yaml -f compose.load.yaml -f compose.session.java.yaml pull
+docker compose -f compose.observability.yaml -f compose.services.yaml -f compose.load.yaml -f compose.session.java.yaml build
+
+docker compose -f compose.observability.yaml -f compose.services.yaml -f compose.load.yaml -f compose.session.ts.yaml pull
+docker compose -f compose.observability.yaml -f compose.services.yaml -f compose.load.yaml -f compose.session.ts.yaml build
+```
+
 ## Steps
 
 Setup observability stack, also used for container monitoring:
