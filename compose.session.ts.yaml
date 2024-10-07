@@ -8,7 +8,7 @@ services:
       # OpenTelemetry
       - NODE_OPTIONS=--require @opentelemetry/auto-instrumentations-node/register
       - OTEL_SERVICE_NAME=session-service
-      - OTEL_NODE_DISABLED_INSTRUMENTATIONS="fs" # Produces too many spans
+      - OTEL_NODE_DISABLED_INSTRUMENTATIONS=fs # Produces too many spans
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://collector:4317
       - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
     ports:
