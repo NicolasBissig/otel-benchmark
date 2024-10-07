@@ -40,7 +40,7 @@ startPeers
 # Phase 1: Java & Java
 docker compose -f compose.observability.yaml -f compose.services.yaml -f compose.session.java.yaml up -d product-service session-service --build
 echo "Waiting for Java services to start..."
-sleep 5
+sleep 15
 docker compose -f compose.observability.yaml -f compose.services.yaml -f compose.session.java.yaml logs session-service
 
 
@@ -52,7 +52,7 @@ startPeers
 
 docker compose -f compose.observability.yaml -f compose.services.yaml -f compose.session.ts.yaml up -d product-service session-service --build
 echo "Waiting for Java and TypeScript services to start..."
-sleep 5
+sleep 15
 docker compose -f compose.observability.yaml -f compose.services.yaml -f compose.session.ts.yaml logs session-service
 
 loadTest
