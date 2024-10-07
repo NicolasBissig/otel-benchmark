@@ -6,6 +6,7 @@ services:
       - ./docker/collector/collector-config.yaml:/etc/collector-config.yaml
       - /var/run:/var/run:ro
       - /var/lib/docker/:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     command: [ "--config=/etc/collector-config.yaml", "--feature-gates=receiver.hostmetrics.normalizeProcessCPUUtilization" ]
     privileged: true
     ports:
