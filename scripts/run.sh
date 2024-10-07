@@ -19,7 +19,7 @@ function startPeers() {
 
 function loadTest() {
   docker compose -f compose.observability.yaml -f compose.services.yaml -f compose.load.yaml up -d k6 autoinstrumenter
-  echo "Waiting for Java & TypeScript load test to finish..."
+  echo "Waiting for load test to finish..."
   docker compose -f compose.observability.yaml -f compose.services.yaml -f compose.load.yaml wait k6
   sleep 10
 }
